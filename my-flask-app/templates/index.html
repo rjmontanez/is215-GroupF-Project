@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IS215-Group F</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --primary-dark: #0056b3;
+            --bg: #f5f5f5;
+            --text-main: #333;
+            --text-muted: #555;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 2rem 1rem;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        form {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="file"] {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .loading {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            display: none;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #333;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .preview, .result {
+            margin-top: 2rem;
+            background-color: var(--card-bg);
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .preview img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        .article {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .title {
+                font-size: 1.2rem;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        function showLoading() {
+            document.getElementById("loading").style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <h1>IS215-Group F<br>Image to Article Generator</h1>
+
+    <form method="POST" action="/upload" enctype="multipart/form-data" onsubmit="showLoading()">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Upload & Generate</button>
+    </form>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        Generating article from your image. Please wait...
+    </div>
+
+    {% if image_url %}
+        <div class="preview">
+            <h2>Uploaded Image</h2>
+            <img src="{{ image_url }}" alt="Uploaded image">
+        </div>
+    {% endif %}
+
+    {% if article %}
+        <div class="result">
+            {% if title %}
+                <div class="title">
+                    {{ title }}
+                </div>
+            {% endif %}
+            <div class="article">
+                <p>{{ article }}</p>
+            </div>
+        </div>
+    {% endif %}
+
+</body>
+</html>
