@@ -13,6 +13,7 @@ s3_client = boto3.client('s3', region_name='us-east-1')
 BUCKET_NAME = 's215-news-image-buckets'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 WAIT_TIMEOUT = 15
+#WAIT_TIMEOUT = 60 #Para mas matagal sana sir, more time for lambda function to work.
 POLL_INTERVAL = 1
 
 S3_BASE_URL = f"https://{BUCKET_NAME}.s3.us-east-1.amazonaws.com"
