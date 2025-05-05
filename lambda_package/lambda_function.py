@@ -16,7 +16,6 @@ def lambda_handler(event, context):
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'])
 
     try:
-        # Detect labels
         rekognition_response = rekognition.detect_labels(
             Image={'S3Object': {'Bucket': bucket, 'Name': key}},
             MaxLabels=10
@@ -26,20 +25,17 @@ def lambda_handler(event, context):
         if not labels:
             raise ValueError("No labels detected in the image.")
 
-        # Detect faces
         face_response = rekognition.detect_faces(
             Image={'S3Object': {'Bucket': bucket, 'Name': key}},
             Attributes=['ALL']
         )
         face_count = len(face_response.get('FaceDetails', []))
 
-        # Recognize celebrities
         celeb_response = rekognition.recognize_celebrities(
             Image={'S3Object': {'Bucket': bucket, 'Name': key}}
         )
         celebrities = [celeb['Name'] for celeb in celeb_response.get('CelebrityFaces', [])]
 
-        # Construct prompt
         additional_info = []
         if face_count:
             additional_info.append(f"{face_count} face(s) detected")
@@ -73,7 +69,6 @@ def lambda_handler(event, context):
 
         article = content['choices'][0]['message']['content'].strip()
 
-        # Store article with title at the top
         output_key = f"articles/{os.path.splitext(os.path.basename(key))[0]}.txt"
         s3.put_object(
             Bucket=bucket,
@@ -82,6 +77,7 @@ def lambda_handler(event, context):
             ContentType='text/plain'
         )
         print(f"✅ Article saved: s3://{bucket}/{output_key}")
+
 
         return {
             'statusCode': 200,
